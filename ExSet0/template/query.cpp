@@ -205,6 +205,7 @@ int main(int argc, char const* argv[]) {
     int verify = false;
     int i = 1;
     bool debug = false;
+    std::vectorr vec;
     while (i < argc) {
         std::string s(argv[i++]);
         if (s.compare("-l") == 0) {

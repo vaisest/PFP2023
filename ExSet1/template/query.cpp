@@ -8,6 +8,7 @@
 #include "include/binary_tree.hpp"
 #include "include/bv.hpp"
 #include "include/vs.hpp"
+#include "include/gf.hpp"
 
 /**
  * Helper function to ouput usage information when the -h flag is detected
@@ -212,12 +213,19 @@ void select_qs(int type, uint64_t limit, bool separate_queries,
         pfp::vs<int> v;
         run_ops<pfp::vs<int>, debug, verify>(v, in);
     }
-    else
+    else if (type == 5)
     {
         if constexpr (debug)
             std::cerr << "Using solution for limited universe" << std::endl;
         pfp::bv<int> bv(limit);
         run_ops<pfp::bv<int>, debug, verify>(bv, in);
+    }
+    else if (type == 6)
+    {
+        if constexpr (debug)
+            std::cerr << "Using solution for limited universe" << std::endl;
+        pfp::gf<int> gf;
+        run_ops<pfp::gf<int>, debug, verify>(gf, in);
     }
 }
 
