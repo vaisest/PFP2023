@@ -35,17 +35,14 @@ namespace pfp
       // size_t idx = value >> 6;
       unsigned short bit = value % 64;
       // unsigned short bit = value - idx * 64;
-      // std::cout << idx << "/" << bit << std::endl;
 
       vec[idx] |= 1UL << (bit);
-      // std::cout << "newnum" << vec[idx] << std::endl;
     }
 
     int count(dtype value) const
     {
       if ((unsigned int)value >= vec.size() * 64)
       {
-        // std::cout << "falsed" << std::flush;
         return false;
       }
 
@@ -53,7 +50,6 @@ namespace pfp
       // size_t idx = value >> 6;
       unsigned short bit = value % 64;
       // unsigned short bit = value - idx * 64;
-      // std::cout << idx << "num" << vec[idx] << "bit" << bit << "ret" << ((vec[idx] >> (bit)) & 1UL) << std::flush;
       return (vec[idx] >> (bit)) & 1UL;
     }
   };
