@@ -224,8 +224,10 @@ void select_qs(int type, uint64_t limit, bool separate_queries,
     {
         if constexpr (debug)
             std::cerr << "Using solution for limited universe" << std::endl;
+        // std::unordered_set<int> gf;
         pfp::gf<int> gf;
         run_ops<pfp::gf<int>, debug, verify>(gf, in);
+        // run_ops<std::unordered_set<int>, debug, verify>(gf, in);
     }
 }
 

@@ -4,6 +4,7 @@
 
 #pragma once
 #include <vector>
+// #include <deque>
 #include <algorithm>
 
 namespace pfp
@@ -19,8 +20,9 @@ namespace pfp
   public:
     vs()
     {
-      // std::vector<dtype> vec;
       isSorted = false;
+      constexpr int elems = 1000000;
+      vec.reserve(elems);
     }
     void insert(dtype val)
     {
@@ -28,18 +30,13 @@ namespace pfp
       isSorted = false;
     }
 
-    // void change_query_mode()
-    // {
-    //   std::sort(vec.begin(), vec.end());
-    // }
-
     int count(dtype val)
     {
       if (!isSorted)
       {
         std::sort(vec.begin(), vec.end());
+        isSorted = true;
       }
-      isSorted = true;
       return std::binary_search(vec.begin(), vec.end(), val);
     }
   };
