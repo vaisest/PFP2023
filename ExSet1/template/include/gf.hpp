@@ -7,6 +7,7 @@
 // #include <unordered_map>
 // #include "bv.hpp"
 #include <vector>
+#include <set>
 
 namespace pfp
 {
@@ -21,31 +22,39 @@ namespace pfp
 
         // vec of buckets, i.e. a vector vector aka vecVec
         std::vector<std::vector<int>> vecVec;
+        // std::vector<std::set<int>> setVec;
 
     private:
         int hash(int val)
         {
             return val % vecVec.size();
+            // return val % setVec.size();
         }
 
     public:
         gf()
         {
             // around 100 000 buckets seems to perform the best for test 4
-            const size_t bucketSize = (1 << 17);
+            const size_t bucketSize = (1 << 16);
             // const size_t bucketSize = 100003; // prime
+
+            // a set is also quick, but
+            // results are seemingly super random
             // 2^12: 3.54s
             // 2^14: 3.20s
             // 2^16: 1.71s
             // 2^17: 1.42s
             // 2^18: 3.26s
+            // 2^19: 1.71s
             // 131101: 1.64s
             // 100003: 1.51s
             //  75001: 1.84
             //  70009: 1.35
             //  65003: 3.14
             //  50021: 3.07
+
             vecVec.resize(bucketSize);
+            // setVec.resize(bucketSize);
         }
 
         void insert(dtype value)
@@ -85,6 +94,7 @@ namespace pfp
                 }
             }
             vecVec[bIdx].push_back(value);
+            // setVec[bIdx].insert(value);
         }
 
         int count(dtype value)
@@ -119,6 +129,7 @@ namespace pfp
                 }
             }
             return false;
+            // return setVec[bIdx].count(value);
         }
     };
 
