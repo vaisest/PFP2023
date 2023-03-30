@@ -10,12 +10,12 @@
 # -march=native Tells the compiler that the binary only has to run on
 #               the exact machine it was compiled on and not general 
 #               machines with similar architecture. (more faster code)
-CPPFLAGS = -std=c++17 -Wall -Wextra -Wshadow -pedantic -march=native
+CPPFLAGS = -std=c++20 -Wall -Wextra -Wshadow -pedantic -march=native
 
 # Environment variable containing the names of headers that will be used
 # with most executables. Without this, make will not know to recompile
 # binaries when headers change.
-HEADERS = include/barray.hpp
+HEADERS = include/barray.hpp include/parray.hpp
 
 # A fake rule that tells make to not expect to actually create files 
 # called "clean" or "debug".
