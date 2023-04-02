@@ -16,6 +16,8 @@ void process(bool summed, bool timed, bool located, bool packed, std::istream &i
     in.read(reinterpret_cast<char *>(&entryCount), 8);
     in.read(reinterpret_cast<char *>(&bits), 8);
 
+    std::cout << "entries: " << entryCount << ", bits: " << bits << std::endl;
+
     if (!in.good())
     {
         std::cout << "stream not so good" << errno << std::endl;

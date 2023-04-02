@@ -59,7 +59,9 @@
         "unordered_map": "cpp",
         "functional": "cpp",
         "numbers": "cpp",
-        "string_view": "cpp"
+        "string_view": "cpp",
+        "chrono": "cpp",
+        "ratio": "cpp"
     },
     "C_Cpp.errorSquiggles": "enabled"
 }
