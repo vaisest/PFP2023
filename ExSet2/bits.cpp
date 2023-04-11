@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <chrono>
 
+// template <class DS>
 void process(bool summed, bool timed, bool located, bool packed, std::istream &in)
 {
     std::uint64_t val;
@@ -16,7 +17,7 @@ void process(bool summed, bool timed, bool located, bool packed, std::istream &i
     in.read(reinterpret_cast<char *>(&entryCount), 8);
     in.read(reinterpret_cast<char *>(&bits), 8);
 
-    std::cout << "entries: " << entryCount << ", bits: " << bits << std::endl;
+    // std::cout << "entries: " << entryCount << ", bits: " << bits << std::endl;
 
     if (!in.good())
     {
@@ -29,8 +30,13 @@ void process(bool summed, bool timed, bool located, bool packed, std::istream &i
         exit(0);
     }
 
-    pfp::bit_array ba(entryCount);
-    pfp::packed_array pa(bits, entryCount);
+    pfp::bit_array ba(bits);
+    pfp::packed_array *pa = nullptr;
+
+    if (packed)
+    {
+        pa = new pfp::packed_array(bits, entryCount);
+    }
 
     if (timed)
     {
@@ -43,7 +49,7 @@ void process(bool summed, bool timed, bool located, bool packed, std::istream &i
         in.read(reinterpret_cast<char *>(&val), 8);
         if (packed)
         {
-            pa.append(val);
+            pa->append(val);
         }
         else
         {
@@ -56,6 +62,12 @@ void process(bool summed, bool timed, bool located, bool packed, std::istream &i
         std::chrono::duration<double> duration = std::chrono::high_resolution_clock::now() - start;
         std::cerr << std::fixed << duration.count() << " s" << std::endl;
         start = std::chrono::high_resolution_clock::now();
+    }
+
+    // intermission
+    if (summed || located)
+    {
+        ba.sumPreproc();
     }
 
     // query bits
@@ -72,7 +84,7 @@ void process(bool summed, bool timed, bool located, bool packed, std::istream &i
         }
         else if (packed)
         {
-            std::cout << pa.get(val) << std::endl;
+            std::cout << pa->get(val) << std::endl;
         }
         else
         {
@@ -133,6 +145,7 @@ int main(int argc, char const *argv[])
             std::cout << "failed to open file" << std::endl;
             exit(-1);
         }
+
         process(summed, timed, located, packed, in);
     }
     else

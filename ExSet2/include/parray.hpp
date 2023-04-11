@@ -54,7 +54,6 @@ namespace pfp
         {
             const size_t bitIdx = width * entry;
             std::uint64_t num = 0;
-            std::cout << "getting with bitIdx: " << bitIdx << " and len: " << bits.size() << std::endl;
             for (size_t i = 0; i < width; i++)
             {
                 num |= (bits[bitIdx + i] << i);
