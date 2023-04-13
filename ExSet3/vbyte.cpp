@@ -30,25 +30,39 @@ void process(bool diffed, bool timed, std::istream &in)
     }
 
     // data structure :^)
-    pfp::vb vb;
+    pfp::vb vb(7);
 
     // input bits
     std::uint64_t val;
-    std::uint64_t last;
     for (std::uint64_t i = 0; i < n; i++)
     {
         in.read(reinterpret_cast<char *>(&val), 8);
-        vb.encode(val);
-        last = val;
-    }
 
-    vb.printDecodeAll();
+        if (diffed)
+        {
+            vb.diffEncode(val);
+        }
+        else
+        {
+            vb.encode(val);
+        }
+    }
 
     if (timed)
     {
         std::chrono::duration<double> duration = std::chrono::high_resolution_clock::now() - start;
         std::cerr << std::fixed << duration.count() << " s" << std::endl;
         start = std::chrono::high_resolution_clock::now();
+    }
+
+    // output
+    if (diffed)
+    {
+        vb.diffPrintDecodeAll();
+    }
+    else
+    {
+        vb.printDecodeAll();
     }
 
     if (timed)
