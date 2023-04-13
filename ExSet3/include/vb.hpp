@@ -6,48 +6,53 @@
 
 namespace pfp
 {
+
+    template <typename INT_T>
     class vb
     {
 
     public:
-        std::vector<unsigned char> bytes;
+        std::vector<INT_T> bytes;
+        uint64_t k;
+        bool diffed;
         uint64_t numCount;
         uint64_t last;
-        uint64_t k;
 
-        vb(uint64_t kin)
+        vb(std::uint64_t kk, bool ddiffed)
+            : k(kk),
+              diffed(ddiffed),
+              numCount(0),
+              last(0)
         {
-            numCount = 0;
-            last = 0;
-            k = kin;
         }
 
         void encode(std::uint64_t num)
         {
-            // std::cout << "num: " << num << std::endl;
+            const uint64_t maxBlocks = 64 / k;
+            const uint64_t stopBit = (1U << k);
 
-            for (int i = 0; i < 8; i++)
+            if (diffed)
             {
-                if (num < (1 << k))
+                const auto temp = num;
+                num = num - last;
+                last = temp;
+            }
+
+            for (uint i = 0; i < maxBlocks; i++)
+            {
+                if (num < stopBit)
                 {
                     // output with stop bit
-                    bytes.push_back(num + (1 << k));
+                    bytes.push_back(num + stopBit);
                     break;
                 }
 
-                uint64_t block = num % (1 << k);
+                uint64_t block = num % stopBit;
                 // output without stop bit
                 bytes.push_back(block);
-                num /= (1 << k);
+                num /= stopBit;
             }
             numCount++;
-        }
-
-        void diffEncode(std::uint64_t num)
-        {
-            uint64_t increase = num - last;
-            encode(increase);
-            last = num;
         }
 
         void printDecodeAll()
@@ -56,52 +61,25 @@ namespace pfp
 
             uint64_t result = 0;
             uint64_t i = 0;
-            for (unsigned char byte : bytes)
+            const uint64_t stopBit = (1U << k);
+
+            for (INT_T byte : bytes)
             {
                 // check leftmost bit
-                bool stop = byte & (1 << k);
+                bool stop = byte & stopBit;
 
                 if (stop)
                 {
-                    // take 7 first bits and add them times 128^i to res
-                    // 1 << 7*i == pow(128, i)
-                    result += (uint64_t)(byte & 0x7F) << (i * k);
+                    // mask without leftmost stop bit
+                    const uint64_t mask = ~stopBit;
+                    result += (uint64_t)(byte & mask) << (i * k);
 
                     std::cout << result << "\n";
 
-                    result = 0;
-                    i = 0;
-                }
-                else
-                {
-                    result += (uint64_t)byte << (i * k);
-                    i++;
-                }
-            }
-            std::cout << std::flush;
-        }
-
-        void diffPrintDecodeAll()
-        {
-            std::cout << bytes.size() << "\n";
-
-            uint64_t totalResult = 0;
-            uint64_t result = 0;
-            uint16_t i = 0;
-            for (unsigned char byte : bytes)
-            {
-                // check leftmost bit
-                bool stop = byte >= (1 << k);
-
-                if (stop)
-                {
-                    // take 7 first bits and add them times 128^i to res
-                    result += (uint64_t)(byte & 0x7F) << (i * k);
-
-                    totalResult += result;
-                    std::cout << totalResult << "\n";
-
-                    result = 0;
+                    if (!diffed)
+                    {
+                        result = 0;
+                    }
                     i = 0;
                 }
                 else

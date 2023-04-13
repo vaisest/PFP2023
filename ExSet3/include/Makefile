@@ -15,21 +15,12 @@ CPPFLAGS = -std=c++20 -Wall -Wextra -Wshadow -pedantic -march=native
 # Environment variable containing the names of headers that will be used
 # with most executables. Without this, make will not know to recompile
 # binaries when headers change.
-HEADERS = 
+HEADERS = ./include/vb.hpp
 
 # A fake rule that tells make to not expect to actually create files 
 # called "clean" or "debug".
 .PHONY: clean debug
 
-# Tells make how to create the "query" file.
-# 
-# The contents after the colon tells make that the "query" file depends on 
-# "query.cpp" and the headers we defined above.
-#
-# The contents of the TAB indented line(s) tells make how to create the "query"
-# file. We tell make to call the gnu c++ compiler (g++) with the specified parameters.
-# We use the general CPPFLAGS variable and provide additional flags to define how
-# we want the compiler to optimize and what the output file should be called.
 main: vbyte.cpp $(HEADERS)
 	g++ $(CPPFLAGS) -DNDEBUG -Ofast -o main vbyte.cpp
 
@@ -45,8 +36,3 @@ debug: vbyte.cpp $(HEADERS)
 
 # Generic rule that tells make that nothing needs to be done about c++ header files.
 %.hpp:
-
-# There is a lot more to compiling C++. Like third party library inclusions and 
-# splitting compilation into multiple object code files to be linked and so on.
-# For the purposes of this course this simplified idea presented in this Makefile
-# is sufficient.

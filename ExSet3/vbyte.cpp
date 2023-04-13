@@ -4,8 +4,8 @@
 #include <cstdint>
 #include <chrono>
 
-// template <class DS>
-void process(bool diffed, bool timed, std::istream &in)
+template <typename T>
+void process(bool diffed, bool timed, uint64_t k, std::istream &in)
 {
     std::uint64_t n;
 
@@ -30,7 +30,7 @@ void process(bool diffed, bool timed, std::istream &in)
     }
 
     // data structure :^)
-    pfp::vb vb(7);
+    pfp::vb<T> vb(k, diffed);
 
     // input bits
     std::uint64_t val;
@@ -38,14 +38,7 @@ void process(bool diffed, bool timed, std::istream &in)
     {
         in.read(reinterpret_cast<char *>(&val), 8);
 
-        if (diffed)
-        {
-            vb.diffEncode(val);
-        }
-        else
-        {
-            vb.encode(val);
-        }
+        vb.encode(val);
     }
 
     if (timed)
@@ -56,14 +49,7 @@ void process(bool diffed, bool timed, std::istream &in)
     }
 
     // output
-    if (diffed)
-    {
-        vb.diffPrintDecodeAll();
-    }
-    else
-    {
-        vb.printDecodeAll();
-    }
+    vb.printDecodeAll();
 
     if (timed)
     {
@@ -77,10 +63,12 @@ int main(int argc, char const *argv[])
     int input_file = -1;
     bool timed = false;
     bool diffed = false;
+    uint64_t k = 7;
 
     for (int i = 1; i < argc; i++)
     {
         std::string s(argv[i]);
+        std::string p(argv[i - 1]);
         if (s == "-t")
         {
             timed = true;
@@ -88,6 +76,14 @@ int main(int argc, char const *argv[])
         else if (s == "-s")
         {
             diffed = true;
+        }
+        else if (s == "-k")
+        {
+            continue;
+        }
+        else if (p == "-k")
+        {
+            k = std::stoi(s);
         }
         else
         {
@@ -105,11 +101,42 @@ int main(int argc, char const *argv[])
             exit(-1);
         }
 
-        process(diffed, timed, in);
+        // fuck c++ honestly
+        if (k < 8)
+        {
+            process<uint8_t>(diffed, timed, k, in);
+        }
+        else if (k < 16)
+        {
+            process<uint16_t>(diffed, timed, k, in);
+        }
+        else if (k < 32)
+        {
+            process<uint32_t>(diffed, timed, k, in);
+        }
+        else if (k < 64)
+        {
+            process<uint64_t>(diffed, timed, k, in);
+        }
     }
     else
     {
-        process(diffed, timed, std::cin);
+        if (k < 8)
+        {
+            process<uint8_t>(diffed, timed, k, std::cin);
+        }
+        else if (k < 16)
+        {
+            process<uint16_t>(diffed, timed, k, std::cin);
+        }
+        else if (k < 32)
+        {
+            process<uint32_t>(diffed, timed, k, std::cin);
+        }
+        else if (k < 64)
+        {
+            process<uint64_t>(diffed, timed, k, std::cin);
+        }
     }
 
     return 0;
