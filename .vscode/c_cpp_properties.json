@@ -6,10 +6,17 @@
                 "${workspaceFolder}/**"
             ],
             "defines": [],
+<<<<<<< Updated upstream
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "c17",
             "cppStandard": "gnu++20",
             "intelliSenseMode": "linux-gcc-x64",
+=======
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c17",
+            "cppStandard": "gnu++20",
+            "intelliSenseMode": "linux-clang-x64",
+>>>>>>> Stashed changes
             "configurationProvider": "ms-vscode.makefile-tools"
         }
     ],
