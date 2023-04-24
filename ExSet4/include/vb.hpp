@@ -10,41 +10,53 @@ namespace pfp
     class vb
     {
     public:
-        std::vector<unsigned char> bytes;
-        uint64_t k;
-        // bool diffed;
         uint64_t numCount;
-        uint64_t last;
-        struct Layer
-        {
-            int control;
-            unsigned char blocks[8];
-        };
 
-        vb(std::uint64_t kk)
-            : k(kk),
-              numCount(0),
-              last(0)
+        const uint64_t stopBit;
+
+        uint64_t cap;
+        uint64_t size;
+        unsigned char *data;
+        double growthFactor;
+
+        vb(std::uint64_t kk, bool ddiffed)
+            : numCount(0),
+              stopBit((1U << 7))
         {
+            cap = 1024;
+            size = 0;
+            data = (unsigned char *)std::malloc(cap);
+            growthFactor = 1.5;
+        }
+
+        void inline pushBack(unsigned char byte)
+        {
+            if (size == cap)
+            {
+                // std::cout << cap << "/extendingto/" << (uint64_t)(cap * growthFactor) << std::endl;
+                cap = (uint64_t)(cap * growthFactor);
+                data = (unsigned char *)std::realloc(data, cap);
+            }
+
+            *(data + size) = byte;
+
+            size++;
         }
 
         void encode(std::uint64_t num)
         {
-            const uint64_t maxBlocks = 64 / k;
-            const uint64_t stopBit = (1U << k);
-
             for (uint i = 0; i < maxBlocks; i++)
             {
                 if (num < stopBit)
                 {
                     // output with stop bit
-                    bytes.push_back(num + stopBit);
+                    pushBack(num + stopBit);
                     break;
                 }
 
                 uint64_t block = num % stopBit;
                 // output without stop bit
-                bytes.push_back(block);
+                pushBack(block);
                 num /= stopBit;
             }
             numCount++;

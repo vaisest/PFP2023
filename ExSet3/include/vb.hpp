@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <cstddef>
+#include <cstdio>
 #include <iostream>
 
 namespace pfp
@@ -21,9 +22,9 @@ namespace pfp
         const uint64_t maxBlocks;
         const uint64_t stopBit;
 
-        unsigned char *data;
         uint64_t cap;
         uint64_t size;
+        unsigned char *data;
         double growthFactor;
 
         vb(std::uint64_t kk, bool ddiffed)
@@ -34,9 +35,9 @@ namespace pfp
               maxBlocks(64 / k),
               stopBit((1U << k))
         {
-            data = (unsigned char *)std::malloc(50);
-            cap = 50;
+            cap = 1024;
             size = 0;
+            data = (unsigned char *)std::malloc(cap);
             growthFactor = 1.5;
         }
 
@@ -91,16 +92,15 @@ namespace pfp
             // mask without leftmost stop bit
             const uint64_t mask = ~stopBit;
 
-            for (uint64_t bidx = 0; bidx < size; bidx++)
+            for (uint64_t bidx = 0; bidx < size; bidx += 1 + k / 8)
             {
-                auto byte = *(data + bidx);
+                auto byte = (uint64_t)(*(data + bidx));
                 // check leftmost bit
                 bool stop = byte & stopBit;
 
+                result += (uint64_t)(byte & mask) << (i * k);
                 if (stop)
                 {
-                    result += (uint64_t)(byte & mask) << (i * k);
-
                     std::cout << result << "\n";
 
                     if (!diffed)
@@ -111,7 +111,6 @@ namespace pfp
                 }
                 else
                 {
-                    result += (uint64_t)byte << (i * k);
                     i++;
                 }
             }

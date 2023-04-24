@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <chrono>
 
-void process(bool naive, bool timed, uint64_t k, std::istream &in)
+void process(bool naive, bool timed, std::istream &in)
 {
     std::uint64_t n;
     std::chrono::_V2::system_clock::time_point start;
@@ -28,7 +28,7 @@ void process(bool naive, bool timed, uint64_t k, std::istream &in)
     }
 
     // data structure :^)
-    pfp::vb vb(k);
+    pfp::vb vb;
 
     // input bits
     std::uint64_t val;
@@ -74,10 +74,13 @@ void process(bool naive, bool timed, uint64_t k, std::istream &in)
 
 int main(int argc, char const *argv[])
 {
+    // i am speed
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
     int input_file = -1;
     bool timed = false;
     bool naive = false;
-    uint64_t k = 7;
 
     for (int i = 1; i < argc; i++)
     {
@@ -106,11 +109,11 @@ int main(int argc, char const *argv[])
             exit(-1);
         }
 
-        process(naive, timed, k, in);
+        process(naive, timed, in);
     }
     else
     {
-        process(naive, timed, k, std::cin);
+        process(naive, timed, std::cin);
     }
 
     return 0;

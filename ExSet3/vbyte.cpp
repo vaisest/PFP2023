@@ -67,6 +67,10 @@ void process(bool diffed, bool timed, uint64_t k, std::istream &in)
 
 int main(int argc, char const *argv[])
 {
+    // i am speed
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
     int input_file = -1;
     bool timed = false;
     bool diffed = false;
