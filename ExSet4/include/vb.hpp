@@ -12,6 +12,7 @@ namespace pfp
     public:
         uint64_t numCount;
 
+        const uint64_t maxBlocks;
         const uint64_t stopBit;
 
         uint64_t cap;
@@ -19,8 +20,9 @@ namespace pfp
         unsigned char *data;
         double growthFactor;
 
-        vb(std::uint64_t kk, bool ddiffed)
+        vb()
             : numCount(0),
+              maxBlocks(64 / 7),
               stopBit((1U << 7))
         {
             cap = 1024;
@@ -66,21 +68,21 @@ namespace pfp
         {
             uint64_t result = 0;
             uint64_t i = 0;
-            uint64_t numCount = 0;
-            const uint64_t stopBit = (1U << k);
+            uint64_t curIdx = 0;
+            // mask without leftmost stop bit
+            const uint64_t mask = ~stopBit;
 
-            for (unsigned char byte : bytes)
+            for (uint64_t bidx = 0; bidx < size; bidx++)
             {
+                auto byte = *(data + bidx);
                 // check leftmost bit
                 bool stop = byte & stopBit;
 
+                result += (uint64_t)(byte & mask) << (i * 7);
                 if (stop)
                 {
-                    // mask without leftmost stop bit
-                    const uint64_t mask = ~stopBit;
-                    result += (uint64_t)(byte & mask) << (i * k);
 
-                    if (numCount == numIdx)
+                    if (curIdx == numIdx)
                     {
                         std::cout << result << std::endl;
                         return;
@@ -88,49 +90,48 @@ namespace pfp
 
                     result = 0;
                     i = 0;
-                    numCount += 1;
+                    curIdx++;
                 }
                 else
                 {
-                    result += (uint64_t)byte << (i * k);
                     i++;
                 }
             }
         }
         void sum(uint64_t numIdx)
         {
-            uint64_t result = 0;
-            uint64_t i = 0;
-            uint64_t numCount = 0;
-            const uint64_t stopBit = (1U << k);
+            // uint64_t result = 0;
+            // uint64_t i = 0;
+            // uint64_t numCount = 0;
+            // const uint64_t stopBit = (1U << k);
 
-            for (unsigned char byte : bytes)
-            {
-                // check leftmost bit
-                bool stop = byte & stopBit;
+            // for (unsigned char byte : bytes)
+            // {
+            //     // check leftmost bit
+            //     bool stop = byte & stopBit;
 
-                if (stop)
-                {
-                    // mask without leftmost stop bit
-                    const uint64_t mask = ~stopBit;
-                    result += (uint64_t)(byte & mask) << (i * k);
+            //     if (stop)
+            //     {
+            //         // mask without leftmost stop bit
+            //         const uint64_t mask = ~stopBit;
+            //         result += (uint64_t)(byte & mask) << (i * k);
 
-                    if (numCount == numIdx)
-                    {
-                        std::cout << result << std::endl;
-                        return;
-                    }
+            //         if (numCount == numIdx)
+            //         {
+            //             std::cout << result << std::endl;
+            //             return;
+            //         }
 
-                    result = 0;
-                    i = 0;
-                    numCount += 1;
-                }
-                else
-                {
-                    result += (uint64_t)byte << (i * k);
-                    i++;
-                }
-            }
+            //         result = 0;
+            //         i = 0;
+            //         numCount += 1;
+            //     }
+            //     else
+            //     {
+            //         result += (uint64_t)byte << (i * k);
+            //         i++;
+            //     }
+            // }
         }
     };
 } // namespace pfp
