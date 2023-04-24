@@ -84,7 +84,7 @@ namespace pfp
 
         void printDecodeAll()
         {
-            std::cout << size << "\n";
+            std::cerr << size << std::endl;
 
             uint64_t result = 0;
             uint64_t i = 0;
