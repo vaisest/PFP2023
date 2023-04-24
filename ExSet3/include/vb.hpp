@@ -24,7 +24,7 @@ namespace pfp
 
         uint64_t cap;
         uint64_t size;
-        unsigned char *data;
+        INT_T *data;
         double growthFactor;
 
         vb(std::uint64_t kk, bool ddiffed)
@@ -37,17 +37,17 @@ namespace pfp
         {
             cap = 1024;
             size = 0;
-            data = (unsigned char *)std::malloc(cap);
+            data = (INT_T *)std::malloc(cap * sizeof(INT_T));
             growthFactor = 1.5;
         }
 
-        void inline pushBack(unsigned char byte)
+        void inline pushBack(INT_T byte)
         {
             if (size == cap)
             {
                 // std::cout << cap << "/extendingto/" << (uint64_t)(cap * growthFactor) << std::endl;
                 cap = (uint64_t)(cap * growthFactor);
-                data = (unsigned char *)std::realloc(data, cap);
+                data = (INT_T *)std::realloc(data, cap * sizeof(INT_T));
             }
 
             *(data + size) = byte;
@@ -92,7 +92,7 @@ namespace pfp
             // mask without leftmost stop bit
             const uint64_t mask = ~stopBit;
 
-            for (uint64_t bidx = 0; bidx < size; bidx += 1 + k / 8)
+            for (uint64_t bidx = 0; bidx < size; bidx++)
             {
                 auto byte = (uint64_t)(*(data + bidx));
                 // check leftmost bit
