@@ -106,7 +106,6 @@ namespace pfp
                     if (numCount == numIdx)
                     {
                         std::cout << result << std::endl;
-
                         return;
                     }
 

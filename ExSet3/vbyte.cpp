@@ -38,7 +38,14 @@ void process(bool diffed, bool timed, uint64_t k, std::istream &in)
     {
         in.read(reinterpret_cast<char *>(&val), 8);
 
-        vb.encode(val);
+        if (diffed)
+        {
+            vb.diffEncode(val);
+        }
+        else
+        {
+            vb.encode(val);
+        }
     }
 
     if (timed)
