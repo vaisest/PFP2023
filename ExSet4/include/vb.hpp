@@ -13,10 +13,10 @@ namespace pfp
     class vb
     {
     public:
-        uint64_t numCount;
+        uint64_t numCount = 0;
 
-        const uint64_t maxBlocks;
-        const uint64_t stopBit;
+        const uint64_t maxBlocks = 8;
+        const uint64_t stopBit = (1U << 7);
 
         // uint64_t cap;
         // uint64_t size;
@@ -43,9 +43,6 @@ namespace pfp
         size_t asCaps[8];
 
         vb()
-            : numCount(0),
-              maxBlocks(8),
-              stopBit((1U << 7))
         {
             for (int i = 0; i < 8; i++)
             {
@@ -53,23 +50,24 @@ namespace pfp
                 // // bs[i] = {(bool *)std::malloc(32 * sizeof(bool)), 32};
                 // bsSizes[i] = 0U;
                 // bsCaps[i] = 32U;
+                bs[i].reserve(256);
 
-                bsums[i] = (uint32_t *)std::malloc(32 * sizeof(uint32_t));
+                bsums[i] = (uint32_t *)std::malloc(256 * sizeof(uint32_t));
                 // bsums[i] = {(uint32_t *)std::malloc(32 * sizeof(uint32_t)), 32};
                 bsumsSizes[i] = 0U;
-                bsumsCaps[i] = 32U;
+                bsumsCaps[i] = 256U;
 
-                as[i] = (unsigned char *)std::malloc(32 * sizeof(unsigned char));
+                as[i] = (unsigned char *)std::malloc(256 * sizeof(unsigned char));
                 // as[i] = {(unsigned char *)std::malloc(32 * sizeof(unsigned char)), 32};
                 asSizes[i] = 0U;
-                asCaps[i] = 32U;
+                asCaps[i] = 256U;
             }
         }
 
         template <typename T>
         void inline pushBack(T *&data, T item, size_t &curSize, size_t &curCap)
         {
-            double growthFactor = 1.5;
+            double growthFactor = 2;
             if (curSize == curCap)
             {
                 curCap = (size_t)((curCap)*growthFactor);
@@ -180,7 +178,7 @@ namespace pfp
         {
             uint64_t result = 0;
 
-            for (uint64_t i = 0; i < maxBlocks; i++)
+            for (uint64_t i = 0; i < 8; i++)
             {
                 const bool stop = bs[i][numIdx];
                 // const bool stop = *(bs[i] + numIdx);
