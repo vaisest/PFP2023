@@ -55,15 +55,16 @@ void process(bool naive, bool timed, std::istream &in)
     {
         in.read(reinterpret_cast<char *>(&idx), 8);
 
-        if (naive)
-        {
-            vb.scan(idx);
-        }
-        else
-        {
-            vb.sum(idx);
-        }
+        // if (naive)
+        // {
+        //     vb.scan(idx);
+        // }
+        // else
+        // {
+        vb.sum(idx);
+        // }
     }
+    std::cout << std::flush;
 
     if (timed)
     {
